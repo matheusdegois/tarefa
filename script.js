@@ -1,72 +1,65 @@
-''@import url( https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display-swap");
+const form = document.getElementById('form')
+const input = document.getElementById('input')
+const todosUL = document.getElementById('todos')
 
-*{
- box-sizing: border-box;
+const todos = JSON.parse(localStorage.getItem('todos'))
+
+if(todos) {
+    todos.forEach(todo => addTodo(todo))
 }
 
-body {
- background-color: #£5£5£5;
- color: #444;
- font-family: 'Poppins', sans-serif;
- display: flex;
- flex-direction: column;
- align-items; center;
- justify-content: center;
- height: 100vh;
- margin: 0;
+form.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    addTodo()
+})
+
+function addTodo(todo) {
+    let todoText = input.value
+
+    if(todo) {
+        todoText = todo.text
+    }
+
+    if(todoText) {
+        const todoEl = document.createElement('li')
+        if(todo && todo.completed) {
+            todoEl.classList.add('completed')
+        }
+
+        todoEl.innerText = todoText
+
+        todoEl.addEventListener('click', () => {
+            todoEl.classList.toggle('completed')
+            updateLS()
+        }) 
+
+        todoEl.addEventListener('contextmenu', (e) => {
+            e.preventDefault()
+
+            todoEl.remove()
+            updateLS()
+        }) 
+
+        todosUL.appendChild(todoEl)
+
+        input.value = ''
+
+        updateLS()
+    }
 }
 
-h1 {
- color: rgb(179, 131, 226);
- font-size: 10rem;
- text-align: center;
- opacity: 0.4;
-}
+function updateLS() {
+    todosEl = document.querySelectorAll('li')
 
- form {
- box-shadow: 0 4px 10px rgba(o, 0, 0, 0.1);
- max-width: 100%;
- width: 400px;
-}
+    const todos = []
 
-.input {
- border: none;
- olor: #444:
- font-size: 2rem;
- padding: 1rem 2rem;
- display: block;
- width: 100%;
-}
+    todosEl.forEach(todoEl => {
+        todos.push({
+            text: todoEl.innerText,
+            completed: todoEl.classList.contains('completed')
+        })
+    })
 
-.input:placeholder {
- color: #d5d5d5;
-}
-
-.input:focus {
- outine-color: rgb(1 79, 131, 226);
-}
-
-.todos {
- background-color: #fff;
- padding: 0;
- margin: 0;
- list-style-type: none;
-}
-
-.todos Ii {
- border-top: 1px solid #e5e5e5;
- cursor: pointer;
- font-size: 1.5rem;
- padding: 1rem 2rem:
-}
-
-.todos li.completed {
- color: #6b6b6;
- text-decoration: line-through;
-}
-
-small {
- color: #b5b5b5:
- margin-top: 3rem;
- text-align: center;
+    localStorage.setItem('todos', JSON.stringify(todos))
 }
